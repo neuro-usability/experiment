@@ -1,8 +1,12 @@
+var flkty = new Flickity('.carousel', {
+  pageDots: false
+});
+
 // SDK Needs to create video and canvas nodes in the DOM in order to function
 // Here we are adding those nodes a predefined div.
 var divRoot = $("#affdex_elements")[0];
-var width = 640;
-var height = 480;
+var width = 320;
+var height = 240;
 var faceMode = affdex.FaceDetectorMode.LARGE_FACES;
 //Construct a CameraDetector and specify the image width / height and face detector mode.
 var detector = new affdex.CameraDetector(divRoot, width, height, faceMode);
