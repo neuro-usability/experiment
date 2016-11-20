@@ -30,6 +30,13 @@ function log(node_name, msg) {
   $(node_name).append("<span>" + msg + "</span><br />")
 }
 
+var record=false;
+$('#record').on('mousedown', function() {
+  record=true;
+});
+$('#record').on('mouseup', function() {
+  record=false;
+});
 //function executes when Start button is pushed.
 function onStart() {
   if (detector && !detector.isRunning) {
