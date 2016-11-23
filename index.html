@@ -10,40 +10,49 @@
 <body>
   <div class="container-fluid">
     <div class="affectiva">
-      <div class="video" id="affdex_elements" style="width:320px;height:240px;"></div>
+      <div class="video" id="affdex_elements"></div>
       <div class="em-results">
-        <strong>EMOTION TRACKING RESULTS</strong>
         <div id="results" style="word-wrap:break-word;"></div>
       </div>
       <div class="em-logs">
-        <strong>DETECTOR LOG MSGS</strong>
-        <div id="logs"></div>
         <div class="buttons">
           <button id="start" onclick="onStart()">Start</button>
           <button id="record">Record</button>
           <button id="stop" onclick="onStop()">Stop</button>
         </div>
+        <div id="logs"></div>
       </div>
     </div>
 
-    <div class="carousel" id="carousel">
-      <div class="carousel-cell" id="">
-        <h1>
-          Welcome!
-        </h1>
-        <p>
-          Please enter your name.
-        </p>
-        <input type="text">
-      </div>
-      <div class="carousel-cell" id="">
-        <h2 class="slide-header">
-          Now smile!
-        </h2>
-        <img class="center" src="img/happy.jpg">
-      </div>
-      <div class="carousel-cell" id="">
-        ende
+    <div class="carousel-container">
+      <div class="carousel" id="carousel">
+        <div class="carousel-cell" id="">
+          <h1>
+            Welcome!
+          </h1>
+          <p>
+            Please enter your name.
+          </p>
+          <input type="text" id="name-input">
+        </div>
+        <div class="carousel-cell" id="happy">
+          <h2 class="slide-header">
+            Now smile!
+          </h2>
+          <img class="center" src="img/happy.jpg">
+        </div>
+        <div class="carousel-cell" id="sad">
+          <h2 class="slide-header">
+            Cry!
+          </h2>
+          <img class="center" src="img/happy.jpg">
+        </div>
+        <div class="carousel-cell" id="angry">
+          <h2 class="slide-header">
+            Be angry!
+          </h2>
+          <img class="center" src="img/happy.jpg">
+        </div>
       </div>
     </div>
 

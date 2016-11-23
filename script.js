@@ -1,7 +1,8 @@
 var flkty = new Flickity('.carousel', {
   pageDots: false
 });
-
+var global = {};
+var filename = 'file';
 // SDK Needs to create video and canvas nodes in the DOM in order to function
 // Here we are adding those nodes a predefined div.
 var divRoot = $("#affdex_elements")[0];
@@ -30,12 +31,14 @@ function log(node_name, msg) {
   $(node_name).append("<span>" + msg + "</span><br />")
 }
 
-var record=false;
+var record = false;
+var recording = false;
 $('#record').on('mousedown', function() {
-  record=true;
+  record = true;
 });
 $('#record').on('mouseup', function() {
-  record=false;
+  record = false;
+  recording = false;
 });
 //function executes when Start button is pushed.
 function onStart() {
