@@ -1,6 +1,4 @@
-var flkty = new Flickity('.carousel', {
-  pageDots: false
-});
+
 var global = {};
 var filename = 'file';
 // SDK Needs to create video and canvas nodes in the DOM in order to function
@@ -11,6 +9,59 @@ var height = 240;
 var faceMode = affdex.FaceDetectorMode.LARGE_FACES;
 //Construct a CameraDetector and specify the image width / height and face detector mode.
 var detector = new affdex.CameraDetector(divRoot, width, height, faceMode);
+var emojiList = {
+  "joy": "😂",
+  "unanmused": "😒",
+  "heart-eyes": "😍",
+  "relaxed": "😌",
+  "kissing-heart": "😘",
+  "blush": "😊",
+  "pensive":"😔",
+  "weary": "😩",
+  "sob": "😭",
+  "smirk": "😏",
+  "grin": "😁",
+  "flushed": "😳",
+  "wink": "😉",
+  "rage": "😡",
+  "scream": "😱",
+  "kiss": "💋",
+  "stuckout-tongue-eyes-closed": "😝",
+  "tongue": "👅",
+  "mouth": "👄",
+  "stuckout-tongue": "😛",
+  "relieved": "😌",
+  "expressionless": "😑",
+  "yum": "😋",
+  "stuckout-tongue-winking-eye": "😜",
+  "disappointed": "😞",
+  "smile": "😄",
+  "sleeping": "😴",
+  "neutral-face": "😐",
+  "sweat-smile": "😅",
+  "smiley": "😃",
+  "angry": "😠",
+  "grimacing": "😬",
+  "laughing": "😆",
+  "kissing-closed-eyes": "😚",
+  "grinning": "😀"
+}
+window.onload = function() {
+  jQuery.each(emojiList, function(emojiKey) {
+    var slide = document.createElement("div");
+    var emoji = document.createElement("div");
+    slide.className = "carousel-cell";
+    emoji.className = "big-emoji";
+    emoji.innerHTML = emojiList[emojiKey];
+    slide.appendChild(emoji);
+    document.getElementById("carousel").appendChild(slide);
+    console.log(emojiList[emojiKey]);
+  });
+  var flkty = new Flickity('.carousel', {
+    pageDots: false
+  });
+};
+
 
 //Enable detection of all Expressions, Emotions and Emojis classifiers.
 detector.detectAllEmotions();
