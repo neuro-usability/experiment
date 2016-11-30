@@ -1,5 +1,6 @@
 
 var global = {};
+var flkty;
 var filename = 'file';
 // SDK Needs to create video and canvas nodes in the DOM in order to function
 // Here we are adding those nodes a predefined div.
@@ -51,13 +52,13 @@ window.onload = function() {
     var slide = document.createElement("div");
     var emoji = document.createElement("div");
     slide.className = "carousel-cell";
+    slide.id = emojiKey;
     emoji.className = "big-emoji";
     emoji.innerHTML = emojiList[emojiKey];
     slide.appendChild(emoji);
     document.getElementById("carousel").appendChild(slide);
-    console.log(emojiList[emojiKey]);
   });
-  var flkty = new Flickity('.carousel', {
+  flkty = new Flickity('.carousel', {
     pageDots: false
   });
 };
