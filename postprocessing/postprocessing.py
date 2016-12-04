@@ -1,35 +1,8 @@
+
 # coding: utf-8
-import json
-from pprint import pprint
-import numpy as np
-import matplotlib.pyplot as plt
 
+# In[194]:
 
-# main 
-with open('../data/tobias.json') as data_file:    
-    data = json.load(data_file)
-
-emoList = []
-array =[]
-for values in data['joy'][0]:
-    tmp = flatten_json(values)
-    for key, value in tmp.items():
-        array.append(value)
-    if emoList == []:
-        emoList = array
-    else:
-        emoList = np.vstack((emoList, array))
-    array = []
-    
-print(emoList[:,1])
-print(emoList.shape)
-
-for i in range(0,37):
-        plt.plot(emoList[:,i])
-plt.show()
-
-
-# flatten function
 def flatten_json(y):
     out = {}
 
@@ -47,3 +20,50 @@ def flatten_json(y):
 
     flatten(y)
     return out
+
+
+# In[271]:
+
+import os
+import json
+from pprint import pprint
+import numpy as np
+import matplotlib.pyplot as plt
+
+path = '../data'
+dataMatrix = []
+dataColumn = []
+labels = []
+
+# for all persons
+for filename in os.listdir(path):
+    with open('../data/'+filename) as data_file:    
+        person = json.load(data_file)
+        # for all emojis
+        for emoji in person:
+            # for all measurements
+            for measurement in person[emoji]:
+                # for all objects
+                for dataObject in measurement:
+                    del dataObject["emojis"]["dominantEmoji"]
+                    flatObject = flatten_json(dataObject)
+                    # for all individual values
+                    for key, value in flatObject.items():
+                        dataColumn.append(float(value))
+                    if dataMatrix == []:
+                        dataMatrix = dataColumn
+                        labels.append(emoji)
+                    else:
+                        dataMatrix = np.vstack((dataMatrix, dataColumn))
+                        labels.append(emoji)
+                    dataColumn = []
+
+for i in range(0,37):
+        plt.plot(dataMatrix[:,i])
+plt.show()
+print(dataMatrix.shape)
+print(np.asarray(labels).shape)
+
+#print(json.dumps(dataObject, indent=3, sort_keys=True))
+#dataMatrix
+
