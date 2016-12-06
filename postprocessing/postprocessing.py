@@ -7,15 +7,22 @@ Spyder Editor
 import os
 import json
 import numpy as np
+import matplotlib.pyplot as plt
 from sklearn.model_selection import cross_val_score
 from sklearn import tree
 from sklearn import svm
 import pydotplus
-from IPython.display import Image  
 from sklearn.neural_network import MLPClassifier
+from sklearn.decomposition import PCA
+import scipy.spatial
 
 path = '/home/jan/Affectiva API/data/'
+# set to 0 if not wanted
+outlierDetection = 1
+# how many data points should be deleted?
+outlierRate = 0.1
 
+# function to get a flat structure
 def flatten_json(y):
     out = {}
 
@@ -34,6 +41,7 @@ def flatten_json(y):
     flatten(y)
     return out
 
+# convert json data in for ML suitable form
 def get_training_data(path):
     dataMatrix = []
     dataColumn = []
@@ -61,9 +69,51 @@ def get_training_data(path):
                             labels.append(emoji)
                         dataColumn = []
     return (dataMatrix, labels)
+
+# Outlier detection
+def gammaidx(X, k):
+    #check input variable k; matrix is assumed to be in suitable shape
+    if k < 1 or k > len(X):
+        raise ValueError('Number of k nearest neighbors (k) not within the range (1, %d).\n' %len(X))
+    #initialize y
+    y = np.zeros(X.shape[0])
+    #calculates vector-form distance vector
+    dist = scipy.spatial.distance.pdist(X, 'euclidean')
+    #converts the vector-form distance vector to a square-form distance matrix
+    dist = scipy.spatial.distance.squareform(dist)
+    #set diagonal distance to infinite as it is the distance of the point to itself 
+    np.fill_diagonal(dist, float('inf'), wrap=False)
+    #sort the indices of all points by distance descending
+    #cut the matrix to k entrys for each data point
+    idx = np.argsort(dist)[:,:k]
+    #creates row vector with range(X.shape[0]) indices
+    #for being able to easily access the values from the dist matrix
+    rowIdx = np.arange(X.shape[0]).reshape(X.shape[0],1)
+    #calculates mean over coloums
+    y = np.mean(dist[rowIdx,idx], axis=1)
+    return y    
     
-# get data with function above
+
+# get data
 (X, Y) = get_training_data(path)
+# get names of predictors
+from flattenedObject import predictorNames
+
+# preprocessing of the data
+if outlierDetection == 1:
+    # outlier detection
+    distances = gammaidx(X, 5)
+    # delete outliers from data and label
+    indices = np.argsort(distances)[:int(outlierRate*len(distances))]
+    X = np.delete(X, indices, 0)
+    Y = np.delete(Y, indices, 0)
+
+# Principal component analysis (PCA)
+pca = PCA()
+pca.fit(X)
+predictorImportance = pca.explained_variance_ratio_[0:10]
+plt.bar(range(len(predictorImportance)), predictorImportance)
+
 # decision tree classifier
 clfTree = tree.DecisionTreeClassifier()
 # SVM classifier
@@ -83,7 +133,14 @@ print("Accuracy Neural Network: %0.2f (+/- %0.2f)" % (scoresNN.mean(),
                            scoresNN.std() * 2))
 
 # print decision tree to PDF
+# TODO check if class_names order is correct
 clfTree = clfTree.fit(X, Y)
-dot_data = tree.export_graphviz(clfTree, out_file=None)
+dot_data = tree.export_graphviz(clfTree, out_file=None, 
+                        feature_names=predictorNames,  
+                         class_names=np.unique(Y),  
+                         filled=True, rounded=True,  
+                         special_characters=True)  
 graph = pydotplus.graph_from_dot_data(dot_data) 
 graph.write_pdf("clfTree.pdf")
+
+
