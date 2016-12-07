@@ -6,6 +6,7 @@ Spyder Editor
     
 import os
 import json
+import time
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.model_selection import cross_val_score
@@ -21,6 +22,8 @@ path = '/home/jan/Affectiva API/data/'
 outlierDetection = 1
 # how many data points should be deleted?
 outlierRate = 0.1
+# how many principal components should be displayed?
+amountComponents = 20
 
 # function to get a flat structure
 def flatten_json(y):
@@ -111,7 +114,7 @@ if outlierDetection == 1:
 # Principal component analysis (PCA)
 pca = PCA()
 pca.fit(X)
-predictorImportance = pca.explained_variance_ratio_[0:10]
+predictorImportance = pca.explained_variance_ratio_[0:amountComponents]
 plt.bar(range(len(predictorImportance)), predictorImportance)
 
 # decision tree classifier
@@ -132,7 +135,7 @@ scoresNN = cross_val_score(clfNN, X, Y, cv=10)
 print("Accuracy Neural Network: %0.2f (+/- %0.2f)" % (scoresNN.mean(), 
                            scoresNN.std() * 2))
 
-# print decision tree to PDF
+# print decision tree to PDF, fit tree model
 # TODO check if class_names order is correct
 clfTree = clfTree.fit(X, Y)
 dot_data = tree.export_graphviz(clfTree, out_file=None, 
@@ -143,4 +146,11 @@ dot_data = tree.export_graphviz(clfTree, out_file=None,
 graph = pydotplus.graph_from_dot_data(dot_data) 
 graph.write_pdf("clfTree.pdf")
 
+# fit SVM model
+clfSVM.fit(X,Y)
 
+# predict one data point and measure the time it takes
+time1 = time.time()
+clfSVM.predict(X[1,:])
+print("Time needed for predicting the class for one data point:",
+      time.time() - time1, "seconds")
